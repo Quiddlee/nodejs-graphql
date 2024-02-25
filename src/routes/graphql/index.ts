@@ -46,7 +46,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
           type: memberType,
           args: { id: { type: memberTypeIdEnum } },
           resolve: async (_parent, args: { id: MemberTypeId }) => {
-            return await prisma.user.findUnique({
+            return await prisma.memberType.findUnique({
               where: {
                 id: args.id,
               },
@@ -63,7 +63,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
           type: postType,
           args: { id: { type: UUIDType } },
           resolve: async (_parent, args: { id: string }) => {
-            return await prisma.user.findUnique({
+            return await prisma.post.findUnique({
               where: {
                 id: args.id,
               },
@@ -80,7 +80,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
           type: profileType,
           args: { id: { type: UUIDType } },
           resolve: async (_parent, args: { id: string }) => {
-            return await prisma.user.findUnique({
+            return await prisma.profile.findUnique({
               where: {
                 id: args.id,
               },
