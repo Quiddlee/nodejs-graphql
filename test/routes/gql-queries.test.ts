@@ -104,43 +104,44 @@ await test('gql-queries', async (t) => {
     t.ok(data.profile.id === profile1.id);
   });
 
-  // await t.test('Get non-existent resources by their id.', async (t) => {
-  //   const { body: user1 } = await createUser(app);
+  await t.test('Get non-existent resources by their id.', async (t) => {
+    const { body: user1 } = await createUser(app);
+    console.log(user1);
 
-  //   const {
-  //     body: { data, errors },
-  //   } = await gqlQuery(app, {
-  //     query: `query ($nullUserId: UUID!, $userWithNullProfileId: UUID!, $profileId: UUID!, $postId: UUID!) {
-  //       user(id: $nullUserId) {
-  //           id
-  //       }
-  //       post(id: $postId) {
-  //           id
-  //       }
-  //       profile(id: $profileId) {
-  //           id
-  //       }
-  //       userWithNullProfile: user(id: $userWithNullProfileId) {
-  //           id
-  //           profile {
-  //             id
-  //           }
-  //       }
-  //   }`,
-  //     variables: {
-  //       userWithNullProfileId: user1.id,
-  //       nullUserId: randomUUID(),
-  //       profileId: randomUUID(),
-  //       postId: randomUUID(),
-  //     },
-  //   });
+    const {
+      body: { data, errors },
+    } = await gqlQuery(app, {
+      query: `query ($nullUserId: UUID!, $userWithNullProfileId: UUID!, $profileId: UUID!, $postId: UUID!) {
+        user(id: $nullUserId) {
+            id
+        }
+        post(id: $postId) {
+            id
+        }
+        profile(id: $profileId) {
+            id
+        }
+        userWithNullProfile: user(id: $userWithNullProfileId) {
+            id
+            profile {
+              id
+            }
+        }
+    }`,
+      variables: {
+        userWithNullProfileId: user1.id,
+        nullUserId: randomUUID(),
+        profileId: randomUUID(),
+        postId: randomUUID(),
+      },
+    });
 
-  //   t.ok(!errors);
-  //   t.ok(data.post === null);
-  //   t.ok(data.profile === null);
-  //   t.ok(data.user === null);
-  //   t.ok(data.userWithNullProfile.profile === null);
-  // });
+    t.ok(!errors);
+    t.ok(data.post === null);
+    t.ok(data.profile === null);
+    t.ok(data.user === null);
+    t.ok(data.userWithNullProfile.profile === null);
+  });
 
   // await t.test('Get user/users with his/their posts, profile, memberType.', async (t) => {
   //   const { body: user1 } = await createUser(app);

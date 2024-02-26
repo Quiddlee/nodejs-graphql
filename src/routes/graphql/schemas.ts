@@ -4,6 +4,7 @@ import {
   GraphQLEnumType,
   GraphQLFloat,
   GraphQLInt,
+  GraphQLList,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql/index.js';
@@ -44,6 +45,18 @@ export const userType = new GraphQLObjectType({
     balance: {
       type: GraphQLFloat,
       description: 'The current balance of the user',
+    },
+    profile: {
+      type: profileType,
+    },
+    posts: {
+      type: new GraphQLList(postType),
+    },
+    userSubscribedTo: {
+      type: new GraphQLList(memberType),
+    },
+    subscribedToUser: {
+      type: new GraphQLList(memberTypeIdEnum),
     },
   }),
 });
