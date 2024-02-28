@@ -1,10 +1,8 @@
 import { Type } from '@fastify/type-provider-typebox';
 import {
-  GraphQLBoolean,
   GraphQLEnumType,
   GraphQLFloat,
   GraphQLInt,
-  GraphQLList,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql/index.js';
@@ -30,37 +28,6 @@ export const createGqlResponseSchema = {
   ),
 };
 
-export const userType = new GraphQLObjectType({
-  name: 'User',
-  description: 'The user representation in the database',
-  fields: () => ({
-    id: {
-      type: UUIDType,
-      description: 'The id of the user',
-    },
-    name: {
-      type: GraphQLString,
-      description: 'The name of the user',
-    },
-    balance: {
-      type: GraphQLFloat,
-      description: 'The current balance of the user',
-    },
-    profile: {
-      type: profileType,
-    },
-    posts: {
-      type: new GraphQLList(postType),
-    },
-    userSubscribedTo: {
-      type: new GraphQLList(memberType),
-    },
-    subscribedToUser: {
-      type: new GraphQLList(memberTypeIdEnum),
-    },
-  }),
-});
-
 export const memberTypeIdEnum = new GraphQLEnumType({
   name: 'MemberTypeId',
   values: {
@@ -72,7 +39,7 @@ export const memberTypeIdEnum = new GraphQLEnumType({
 export const memberType = new GraphQLObjectType({
   name: 'Member',
   description: 'The member type representation in the database',
-  fields: () => ({
+  fields: {
     id: {
       type: memberTypeIdEnum,
       description: 'The id of the member type',
@@ -85,13 +52,13 @@ export const memberType = new GraphQLObjectType({
       type: GraphQLInt,
       description: 'The current post limit per month of the member type',
     },
-  }),
+  },
 });
 
 export const postType = new GraphQLObjectType({
   name: 'Post',
   description: 'The post representation in the database',
-  fields: () => ({
+  fields: {
     id: {
       type: UUIDType,
       description: 'The id of the post',
@@ -104,24 +71,5 @@ export const postType = new GraphQLObjectType({
       type: GraphQLString,
       description: 'The content of the post',
     },
-  }),
-});
-
-export const profileType = new GraphQLObjectType({
-  name: 'Profile',
-  description: 'The profile representation in the database',
-  fields: () => ({
-    id: {
-      type: UUIDType,
-      description: 'The profile id',
-    },
-    isMale: {
-      type: GraphQLBoolean,
-      description: 'The field that represents profile is male or not',
-    },
-    yearOfBirth: {
-      type: GraphQLInt,
-      description: 'The profiles year of birth',
-    },
-  }),
+  },
 });
