@@ -60,10 +60,32 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
         },
       },
       userSubscribedTo: {
-        type: new GraphQLList(memberType),
+        type: new GraphQLList(userType),
+        resolve: async (parent: { id: string }) => {
+          return prisma.user.findMany({
+            where: {
+              subscribedToUser: {
+                some: {
+                  subscriberId: parent.id,
+                },
+              },
+            },
+          });
+        },
       },
       subscribedToUser: {
-        type: new GraphQLList(memberTypeIdEnum),
+        type: new GraphQLList(userType),
+        resolve: async (parent: { id: string }) => {
+          return prisma.user.findMany({
+            where: {
+              userSubscribedTo: {
+                some: {
+                  authorId: parent.id,
+                },
+              },
+            },
+          });
+        },
       },
     }),
   });
