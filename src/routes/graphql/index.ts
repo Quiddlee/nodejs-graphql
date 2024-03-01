@@ -137,80 +137,84 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
     },
   });
 
-  const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
-      name: 'RootQueryType',
-      fields: {
-        users: {
-          type: new GraphQLList(userType),
-          resolve: async () => {
-            return prisma.user.findMany();
-          },
-        },
-        user: {
-          type: userType as GraphQLObjectType,
-          args: { id: { type: UUIDType } },
-          resolve: async (_parent, args: { id: string }) => {
-            return prisma.user.findUnique({
-              where: {
-                id: args.id,
-              },
-            });
-          },
-        },
-        memberTypes: {
-          type: new GraphQLList(memberType),
-          resolve: async () => {
-            return prisma.memberType.findMany();
-          },
-        },
-        memberType: {
-          type: memberType,
-          args: { id: { type: memberTypeIdEnum } },
-          resolve: async (_parent, args: { id: MemberTypeId }) => {
-            return prisma.memberType.findUnique({
-              where: {
-                id: args.id,
-              },
-            });
-          },
-        },
-        posts: {
-          type: new GraphQLList(postType),
-          resolve: async () => {
-            return prisma.post.findMany();
-          },
-        },
-        post: {
-          type: postType,
-          args: { id: { type: UUIDType } },
-          resolve: async (_parent, args: { id: string }) => {
-            return prisma.post.findUnique({
-              where: {
-                id: args.id,
-              },
-            });
-          },
-        },
-        profiles: {
-          type: new GraphQLList(profileType),
-          resolve: async () => {
-            return prisma.profile.findMany();
-          },
-        },
-        profile: {
-          type: profileType as GraphQLObjectType,
-          args: { id: { type: UUIDType } },
-          resolve: async (_parent, args: { id: string }) => {
-            return prisma.profile.findUnique({
-              where: {
-                id: args.id,
-              },
-            });
-          },
+  // QUERIES
+  const queryType = new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      users: {
+        type: new GraphQLList(userType),
+        resolve: async () => {
+          return prisma.user.findMany();
         },
       },
-    }),
+      user: {
+        type: userType as GraphQLObjectType,
+        args: { id: { type: UUIDType } },
+        resolve: async (_parent, args: { id: string }) => {
+          return prisma.user.findUnique({
+            where: {
+              id: args.id,
+            },
+          });
+        },
+      },
+      memberTypes: {
+        type: new GraphQLList(memberType),
+        resolve: async () => {
+          return prisma.memberType.findMany();
+        },
+      },
+      memberType: {
+        type: memberType,
+        args: { id: { type: memberTypeIdEnum } },
+        resolve: async (_parent, args: { id: MemberTypeId }) => {
+          return prisma.memberType.findUnique({
+            where: {
+              id: args.id,
+            },
+          });
+        },
+      },
+      posts: {
+        type: new GraphQLList(postType),
+        resolve: async () => {
+          return prisma.post.findMany();
+        },
+      },
+      post: {
+        type: postType,
+        args: { id: { type: UUIDType } },
+        resolve: async (_parent, args: { id: string }) => {
+          return prisma.post.findUnique({
+            where: {
+              id: args.id,
+            },
+          });
+        },
+      },
+      profiles: {
+        type: new GraphQLList(profileType),
+        resolve: async () => {
+          return prisma.profile.findMany();
+        },
+      },
+      profile: {
+        type: profileType as GraphQLObjectType,
+        args: { id: { type: UUIDType } },
+        resolve: async (_parent, args: { id: string }) => {
+          return prisma.profile.findUnique({
+            where: {
+              id: args.id,
+            },
+          });
+        },
+      },
+    },
+  });
+
+  // ROOT SCHEMA
+  const schema = new GraphQLSchema({
+    query: queryType,
   });
 
   fastify.route({
