@@ -10,6 +10,7 @@ import {
   graphql,
   GraphQLBoolean,
   GraphQLFloat,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLList,
   GraphQLObjectType,
@@ -18,6 +19,14 @@ import {
 } from 'graphql';
 import { UUIDType } from './types/uuid.js';
 import { MemberTypeId } from '../member-types/schemas.js';
+import { CreateUserInput } from './types/user.js';
+import { CreatePostInput } from './types/post.js';
+import { CreateProfileInput } from './types/profile.js';
+import {
+  createPostInput,
+  createUserInput,
+  createProfileInput,
+} from './mutationInputSchemas.js';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
   const { prisma } = fastify;
@@ -122,8 +131,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
       },
       memberType: {
         type: memberType,
-        args: { id: { type: UUIDType } },
-        resolve: async (parent: { memberTypeId: MemberTypeId }) => {
+        resolve: (parent: { memberTypeId: MemberTypeId }) => {
           return prisma.memberType.findUnique({
             where: {
               id: parent.memberTypeId,
@@ -212,9 +220,59 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
     },
   });
 
+  // MUTATIONS
+  const mutationType = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+      createPost: {
+        type: postType,
+        args: {
+          input: {
+            type: createPostInput,
+          },
+          dto: {
+            type: createPostInput,
+          },
+        },
+        resolve: (_parent, args: { dto: CreatePostInput }) => {
+          return prisma.post.create({ data: args.dto });
+        },
+      },
+      createUser: {
+        type: userType as GraphQLObjectType,
+        args: {
+          input: {
+            type: createUserInput,
+          },
+          dto: {
+            type: createUserInput,
+          },
+        },
+        resolve: (_parent, args: { dto: CreateUserInput }) => {
+          return prisma.user.create({ data: args.dto });
+        },
+      },
+      createProfile: {
+        type: profileType as GraphQLObjectType,
+        args: {
+          input: {
+            type: createProfileInput,
+          },
+          dto: {
+            type: createProfileInput,
+          },
+        },
+        resolve: (_parent, args: { dto: CreateProfileInput }) => {
+          return prisma.profile.create({ data: args.dto });
+        },
+      },
+    },
+  });
+
   // ROOT SCHEMA
   const schema = new GraphQLSchema({
     query: queryType,
+    mutation: mutationType,
   });
 
   fastify.route({
