@@ -3,6 +3,7 @@ import {
   GraphQLEnumType,
   GraphQLFloat,
   GraphQLInt,
+  GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql/index.js';
@@ -60,16 +61,19 @@ export const postType = new GraphQLObjectType({
   description: 'The post representation in the database',
   fields: {
     id: {
-      type: UUIDType,
+      type: new GraphQLNonNull(UUIDType),
       description: 'The id of the post',
     },
     title: {
-      type: GraphQLString,
+      type: new GraphQLNonNull(GraphQLString),
       description: 'The title of the post',
     },
     content: {
-      type: GraphQLString,
+      type: new GraphQLNonNull(GraphQLString),
       description: 'The content of the post',
+    },
+    authorId: {
+      type: new GraphQLNonNull(UUIDType),
     },
   },
 });
