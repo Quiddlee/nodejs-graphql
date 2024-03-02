@@ -91,8 +91,5 @@ export const changeProfileInput = new GraphQLInputObjectType({
     memberTypeId: {
       type: GraphQLString,
     },
-    userId: {
-      type: GraphQLString,
-    },
   },
 });

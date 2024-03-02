@@ -20,7 +20,7 @@ import { UUIDType } from './types/uuid.js';
 import { MemberTypeId } from '../member-types/schemas.js';
 import { CreateUpdateUserInput } from './types/user.js';
 import { CreateUpdatePostInput } from './types/post.js';
-import { CreateUpdateProfileInput } from './types/profile.js';
+import { ChangeProfileInput, CreateProfileInput } from './types/profile.js';
 import {
   createPostInput,
   createUserInput,
@@ -255,7 +255,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
             type: createProfileInput,
           },
         },
-        resolve: (_parent, args: { dto: CreateUpdateProfileInput }) => {
+        resolve: (_parent, args: { dto: CreateProfileInput }) => {
           return prisma.profile.create({ data: args.dto });
         },
       },
@@ -339,7 +339,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
             type: changeProfileInput,
           },
         },
-        resolve: (_parent, args: { id: string; dto: CreateUpdateProfileInput }) => {
+        resolve: (_parent, args: { id: string; dto: ChangeProfileInput }) => {
           return prisma.profile.update({
             where: {
               id: args.id,
