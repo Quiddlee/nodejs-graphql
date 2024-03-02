@@ -18,13 +18,16 @@ import {
 } from 'graphql';
 import { UUIDType } from './types/uuid.js';
 import { MemberTypeId } from '../member-types/schemas.js';
-import { CreateUserInput } from './types/user.js';
-import { CreatePostInput } from './types/post.js';
-import { CreateProfileInput } from './types/profile.js';
+import { CreateUpdateUserInput } from './types/user.js';
+import { CreateUpdatePostInput } from './types/post.js';
+import { CreateUpdateProfileInput } from './types/profile.js';
 import {
   createPostInput,
   createUserInput,
   createProfileInput,
+  changePostInput,
+  changeProfileInput,
+  changeUserInput,
 } from './mutationInputSchemas.js';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
@@ -230,7 +233,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
             type: createPostInput,
           },
         },
-        resolve: (_parent, args: { dto: CreatePostInput }) => {
+        resolve: (_parent, args: { dto: CreateUpdatePostInput }) => {
           return prisma.post.create({ data: args.dto });
         },
       },
@@ -241,7 +244,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
             type: createUserInput,
           },
         },
-        resolve: (_parent, args: { dto: CreateUserInput }) => {
+        resolve: (_parent, args: { dto: CreateUpdateUserInput }) => {
           return prisma.user.create({ data: args.dto });
         },
       },
@@ -252,7 +255,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
             type: createProfileInput,
           },
         },
-        resolve: (_parent, args: { dto: CreateProfileInput }) => {
+        resolve: (_parent, args: { dto: CreateUpdateProfileInput }) => {
           return prisma.profile.create({ data: args.dto });
         },
       },
@@ -305,6 +308,63 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
           });
 
           return null;
+        },
+      },
+      changePost: {
+        type: postType,
+        args: {
+          id: {
+            type: UUIDType,
+          },
+          dto: {
+            type: changePostInput,
+          },
+        },
+        resolve: (_parent, args: { id: string; dto: CreateUpdatePostInput }) => {
+          return prisma.post.update({
+            where: {
+              id: args.id,
+            },
+            data: args.dto,
+          });
+        },
+      },
+      changeProfile: {
+        type: profileType as GraphQLObjectType,
+        args: {
+          id: {
+            type: UUIDType,
+          },
+          dto: {
+            type: changeProfileInput,
+          },
+        },
+        resolve: (_parent, args: { id: string; dto: CreateUpdateProfileInput }) => {
+          return prisma.profile.update({
+            where: {
+              id: args.id,
+            },
+            data: args.dto,
+          });
+        },
+      },
+      changeUser: {
+        type: userType as GraphQLObjectType,
+        args: {
+          id: {
+            type: UUIDType,
+          },
+          dto: {
+            type: changeUserInput,
+          },
+        },
+        resolve: (_parent, args: { id: string; dto: CreateUpdateUserInput }) => {
+          return prisma.user.update({
+            where: {
+              id: args.id,
+            },
+            data: args.dto,
+          });
         },
       },
     },

@@ -1,4 +1,4 @@
-export type CreateUserInput = {
+export type CreateUpdateUserInput = {
   name: string;
   balance: number;
 };

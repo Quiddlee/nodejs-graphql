@@ -1,4 +1,4 @@
-export type CreateProfileInput = {
+export type CreateUpdateProfileInput = {
   isMale: boolean;
   yearOfBirth: number;
   memberTypeId: string;
