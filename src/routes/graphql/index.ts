@@ -7,11 +7,9 @@ import {
   postType,
 } from './schemas.js';
 import {
-  DocumentNode,
   graphql,
   GraphQLBoolean,
   GraphQLFloat,
-  GraphQLInputField,
   GraphQLInt,
   GraphQLList,
   GraphQLObjectType,
