@@ -203,7 +203,6 @@ await test('gql-mutations', async (t) => {
       },
     });
 
-    console.log(errors);
     const { body: subscribedToUser2 } = await subscribedToUser(app, user2.id);
     const { body: subscribedToUser4 } = await subscribedToUser(app, user4.id);
 
