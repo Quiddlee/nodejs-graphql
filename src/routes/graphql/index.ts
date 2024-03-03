@@ -7,14 +7,18 @@ import {
   postType,
 } from './schemas.js';
 import {
+  DocumentNode,
   graphql,
   GraphQLBoolean,
   GraphQLFloat,
+  GraphQLInputField,
   GraphQLInt,
   GraphQLList,
   GraphQLObjectType,
   GraphQLSchema,
   GraphQLString,
+  parse,
+  validate,
 } from 'graphql';
 import { UUIDType } from './types/uuid.js';
 import { MemberTypeId } from '../member-types/schemas.js';
@@ -29,6 +33,7 @@ import {
   changeProfileInput,
   changeUserInput,
 } from './mutationInputSchemas.js';
+import depthLimit from 'graphql-depth-limit';
 
 const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
   const { prisma } = fastify;
@@ -72,7 +77,7 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
       },
       userSubscribedTo: {
         type: new GraphQLList(userType),
-        resolve: async (parent: { id: string }) => {
+        resolve: (parent: { id: string }) => {
           return prisma.user.findMany({
             where: {
               subscribedToUser: {
@@ -435,6 +440,17 @@ const plugin: FastifyPluginAsyncTypebox = async (fastify) => {
     },
     async handler(req) {
       const { query, variables } = req.body;
+
+      const document = parse(query);
+      const validationErrors = validate(schema, document, [depthLimit(5)]);
+      const isErrors = validationErrors.length > 0;
+
+      if (isErrors)
+        return {
+          data: null,
+          errors: validationErrors,
+        };
+
       const graphqlRes = await graphql({
         schema,
         source: query,
